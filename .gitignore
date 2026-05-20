@@ -1,0 +1,37 @@
+# Environment variables
+.env
+.env.*
+*.env
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+
+# Celery beat schedule
+celerybeat-schedule
+celerybeat.pid
+
+# Local data (PDFs, uploads, temp files)
+data/
+output/
+uploads/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Qdrant local storage (if running locally)
+qdrant_storage/

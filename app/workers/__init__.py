@@ -1,0 +1,1 @@
+from .tasks import process_resume_pipeline

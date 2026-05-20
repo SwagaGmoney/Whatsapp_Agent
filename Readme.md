@@ -225,7 +225,3 @@ QDRANT_PORT=6333
 | Tunnel (local dev) | ngrok |
 
 ---
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

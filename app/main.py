@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
+from presidio_analyzer import analyzer_engine
 from app.schemas import (
     TwilioMessageInbound,
     ApiResponse,
@@ -11,6 +12,9 @@ from app.celery_app import celery_app
 from app.twilio_utils import download_media_file
 from app.persistence.state_manager import initialize_state_if_missing
 
+from contextlib import asynccontextmanager
+from app.pii.custom_recognizers import LinkedInRecognizer
+
 import logging
 
 
@@ -21,15 +25,21 @@ logger = logging.getLogger(__name__)
 
 
 # HEALTH CHECK
-
 @app.get("/health")
 async def health():
     return {"status": "ok", "service": settings.APP_NAME}
 
+# custom recognizer 
+@asynccontextmanager
+async def lifespan(app):
+    recognizer = LinkedInRecognizer()
+    analyzer_engine.registry.add_recognizer(recognizer)
+    print("Custom LinkedIn/GitHub/Portfolio recognizer loaded.")
+    yield
 
+app.router.lifespan_context = lifespan
 
 # TWILIO WEBHOOK ENDPOINT
-
 @app.post("/webhook/whatsapp")
 async def whatsapp_webhook(
     request: Request,
@@ -78,7 +88,7 @@ async def whatsapp_webhook(
 
     celery_app.send_task(
         "workers.process_message",
-        args=[payload.dict()]
+        args=[payload.model_dump()]
     )
 
     return JSONResponse(
@@ -86,5 +96,5 @@ async def whatsapp_webhook(
             success=True,
             message="Message received. Processing asynchronously.",
             data={"event_type": event_type}
-        ).dict()
+        ).model_dump()
     )

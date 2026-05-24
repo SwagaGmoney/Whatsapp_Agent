@@ -1,10 +1,18 @@
-from typing import List
+from typing import List, Dict, Any
 from qdrant_client import QdrantClient
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
-from app.config import get_settings
+from sentence_transformers import SentenceTransformer
+
+from app.config import settings
 from app.schemas import RagResult
 
-settings = get_settings()
+
+# Load embedding model once
+_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+
+def embed_text(text: str) -> List[float]:
+    """Convert text into embedding vector."""
+    return _model.encode(text).tolist()
 
 
 def get_qdrant_client() -> QdrantClient:
@@ -18,22 +26,27 @@ def get_qdrant_client() -> QdrantClient:
 def retrieve_ats_constraints(job_description: str, top_k: int = 5) -> RagResult:
     """
     Retrieves ATS parser rules and resume‑writing constraints
-    based on the job description text.
+    based on the job description text using modern Qdrant Query API.
     """
 
     client = get_qdrant_client()
 
-    # Perform vector search
-    search_results = client.search(
+    # Embed the job description
+    query_vec = embed_text(job_description)
+
+    # Perform vector search using modern query_points interface
+    response = client.query_points(
         collection_name=settings.QDRANT_COLLECTION_NAME,
-        query_vector=job_description,
-        limit=top_k
+        query=query_vec,  # query accepts the raw embedding vector list
+        limit=top_k,
+        with_payload=True
     )
 
     rules: List[str] = []
-    metadata = []
+    metadata: List[Dict[str, Any]] = []
 
-    for hit in search_results:
+    # Extract clean list from response container points
+    for hit in response.points:
         payload = hit.payload or {}
         rule_text = payload.get("rule_text")
         if rule_text:

@@ -1,9 +1,8 @@
 from typing import List, Dict
 from qdrant_client import QdrantClient
 from qdrant_client.http.models import VectorParams
-from app.config import get_settings
+from app.config import settings
 
-settings = get_settings()
 
 
 def get_qdrant_client() -> QdrantClient:

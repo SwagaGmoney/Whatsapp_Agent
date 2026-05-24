@@ -85,23 +85,24 @@ Protects operational margins and API limits with an isolated, endpoint-level rat
 ```
 Whatsapp_agent/
 ├── app/
-│   ├── graph/
-│   ├── rag/
-│   ├── pii/
-│   ├── pdf/
-│   ├── workers/
-│   ├── main.py
-│   ├── celery_app.py
-│   ├── config.py
-│   ├── rate_limit.py
-│   ├── twilio_utils.py
-│   └── schemas.py
+│   ├── graph/               # LangGraph workflows
+│   ├── rag/                 # Qdrant vector search
+│   ├── pii/                 # Presidio client + custom recognizers
+│   ├── pdf/                 # PDF rendering engine
+│   ├── workers/             # Celery tasks
+│   ├── main.py              # FastAPI entrypoint
+│   ├── celery_app.py        # Celery config
+│   ├── config.py            # Settings loader
+│   ├── rate_limit.py        # Rate limiting middleware
+│   ├── twilio_utils.py      # WhatsApp helpers
+│   └── schemas.py           # Pydantic models
 ├── notebooks/
 ├── requirements.txt
 ├── Dockerfile
 ├── docker-compose.yml
 ├── README.md
 └── .env
+
 ```
 
 ---

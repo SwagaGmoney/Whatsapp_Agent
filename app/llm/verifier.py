@@ -1,6 +1,6 @@
 # app/llm/verifier.py
 
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from app.config import get_settings
 from app.schemas import VerificationResult

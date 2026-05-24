@@ -2,20 +2,34 @@ import requests
 from app.config import get_settings
 from app.schemas import PiiSanitizedBlock
 
+# custom recognizers
+from presidio_analyzer import AnalyzerEngine
+from app.pii.custom_recognizers import LinkedInRecognizer
+
 settings = get_settings()
 
+# register custom recognizer. 
+analyzer = AnalyzerEngine()
+analyzer.registry.add_recognizer(LinkedInRecognizer())
 
 def analyze_text(text: str):
     """Send text to Presidio Analyzer."""
     url = f"{settings.PRESIDIO_ANALYZER_URL}/analyze"
     payload = {
         "text": text,
-        "language": "en"
+        "language": "en",
+        "entities": [
+            "PHONE_NUMBER",
+            "EMAIL_ADDRESS",
+            "URL",
+            "LINKEDIN"
+        ]
     }
 
     resp = requests.post(url, json=payload)
     resp.raise_for_status()
     return resp.json()
+
 
 
 def anonymize_text(text: str, analysis_results):

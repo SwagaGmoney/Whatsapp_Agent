@@ -184,31 +184,6 @@ This details the sequential end-to-end execution loop triggered when a user enga
 
 ---
 
-## 🔐 Environment Variables
-
-Create a `.env` file in the project root and populate it with the following keys:
-
-```env
-# Twilio
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
-TWILIO_WHATSAPP_NUMBER=whatsapp_number
-
-
-# LLM Provider
-OPENAI_API_KEY=your_openai_api_key
-
-# Redis
-REDIS_URL=redis://localhost:6379/0
-
-# PostgreSQL
-DATABASE_URL=postgresql://user:password@localhost:5432/ats_db
-
-# Qdrant
-QDRANT_HOST=localhost
-QDRANT_PORT=6333
-```
-
 ---
 
 ## 🧰 Tech Stack
